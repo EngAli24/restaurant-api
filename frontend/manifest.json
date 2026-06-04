@@ -1,0 +1,17 @@
+{
+  "name": "مطعمنا",
+  "short_name": "مطعمنا",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff4757",
+  "description": "اطلب أشهى المأكولات من مطعمنا بسهولة.",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعمنا | إتمام الطلب</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ff4757">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+       
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">مطعمنا 🍔</div>
+        <ul class="nav-links">
+            <li><a href="/">العودة للرئيسية</a></li>
+        </ul>
+    </nav>
+
+    <div class="checkout-container">
+        <div class="admin-card">
+            <h2 style="color: var(--secondary-color); margin-bottom: 20px; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px;">إتمام الطلب 🛵</h2>
+            
+            <div id="order-summary" class="summary-box"></div>
+            <h3 style="text-align: left; margin-bottom: 20px;">الإجمالي: <span id="checkout-total" style="color: var(--primary-color);">0</span> ج.م</h3>
+
+            <form id="checkout-form">
+                <div class="form-group">
+                    <label>الاسم بالكامل</label>
+                    <input type="text" id="customer-name" placeholder="اسمك" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="text" id="customer-phone" placeholder="رقم للتواصل" required>
+                </div>
+                <div class="form-group">
+                    <label>عنوان التوصيل بالتفصيل</label>
+                    <input type="text" id="address" placeholder="الشارع، العمارة، رقم الشقة..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>وسيلة الدفع</label>
+                    <div style="display: flex; gap: 15px; margin-top: 5px;">
+                        <label style="font-weight: normal; cursor: pointer;">
+                            <input type="radio" name="payment" value="Cash" checked> الدفع عند الاستلام
+                        </label>
+                        <label style="font-weight: normal; cursor: pointer; color: #777;">
+                            <input type="radio" name="payment" value="VodafoneCash" disabled> فودافون كاش (قريباً)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظات إضافية</label>
+                    <textarea id="notes" rows="2" placeholder="بدون بصل..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">تأكيد الطلب</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- نافذة التنبيه للزوار -->
+    <div id="guest-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background:var(--white); margin:15vh auto; padding:2rem; width:90%; max-width:450px; border-radius:12px; text-align: center;">
+            <h2 style="color: var(--secondary-color); margin-bottom: 15px;">نصيحة سريعة! 💡</h2>
+            <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">سجل الدخول دلوقتي عشان تقدر تتابع حالة طلبك خطوة بخطوة وتشوف تاريخ طلباتك من البروفايل بتاعك.</p>
+            <div style="display:flex; flex-direction: column; gap:10px;">
+                <a href="/login" class="submit-btn" style="text-decoration:none; background-color: var(--primary-color); padding: 12px;">تسجيل الدخول / إنشاء حساب</a>
+                <button type="button" onclick="submitOrderAsGuest()" class="submit-btn" style="background:#95a5a6; padding: 12px;">لا شكراً، متابعة كزائر</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/checkout.js"></script>
+</body>
+</html>
