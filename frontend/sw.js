@@ -1,4 +1,4 @@
-const CACHE_NAME = 'restaurant-cache-v2';
+const CACHE_NAME = 'restaurant-cache-v3';
 
 const urlsToCache = [
   '/',
