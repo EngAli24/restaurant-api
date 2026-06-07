@@ -428,3 +428,91 @@ body {
             display: none;
         }
 /*  */
+/* 📱 تظبيط الـ Navbar لشاشات الموبايل */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column; 
+        padding: 15px 10px;
+        gap: 15px;
+    }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap; 
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 0;
+    }
+
+    .nav-links li {
+        margin: 0;
+    }
+
+    .nav-links li a, 
+    .nav-links li button,
+    #logout-btn {
+        font-size: 14px; 
+        padding: 6px 12px;
+        white-space: nowrap; 
+    }
+}
+/* =========================================
+    إعدادات التجاوب الشاملة للموبايل (Responsive)
+   ========================================= */
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .container, section, main {
+        width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        box-sizing: border-box;
+    }
+
+    h1 { font-size: 26px !important; }
+    h2 { font-size: 22px !important; }
+    h3 { font-size: 18px !important; }
+    p, span, a, label { font-size: 15px !important; }
+
+    img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+  
+    .menu-grid, .cards-container, .row, .grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+
+    .card, .meal-card, .menu-item {
+        width: 100% !important;
+        max-width: 350px !important; 
+        margin: 0 auto !important;
+    }
+
+    form, .form-container, .login-box {
+        width: 100% !important;
+        padding: 20px 15px !important;
+        box-sizing: border-box !important;
+        margin: 10px auto !important;
+    }
+
+    input, select, textarea, button {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    table {
+        display: block !important;
+        overflow-x: auto !important; 
+        white-space: nowrap !important;
+    }
+}
