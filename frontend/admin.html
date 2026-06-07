@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعمنا | لوحة الإدارة</title>
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container { max-width: 1000px; margin: 2rem auto; padding: 0 20px; }
+        .admin-card { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 2rem; overflow: hidden; }
+        .admin-card h2 { color: var(--secondary-color); margin-bottom: 1.5rem; border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo', sans-serif; }
+        .submit-btn { background: var(--primary-color); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: var(--transition); width: 100%;}
+        .submit-btn:hover { background-color: #ee5253; }
+        .stats-grid { display: flex; gap: 20px; flex-wrap: wrap; }
+        .stat-box { flex: 1; background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #eee; min-width: 250px;}
+        .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; min-width: 600px; }
+        .orders-table th, .orders-table td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        .orders-table th { background-color: #f8f9fa; color: var(--secondary-color); font-weight: bold; }
+        .update-btn { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .update-btn:hover { background: #2980b9; }
+        .delete-btn { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .delete-btn:hover { background: #c0392b; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">لوحة الإدارة ⚙️</div>
+        <ul class="nav-links">
+            <li><a href="/">الرئيسية</a></li>
+            <li><a href="/profile" style="color: var(--primary-color); font-weight: bold;">البروفايل 👤</a></li>
+            <li><a href="javascript:void(0)" id="logout-btn" style="color: var(--primary-color);">تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-container">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <a href="/orders" style="background: var(--secondary-color); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-size: 1.2rem; font-weight: bold; display: inline-block;">🛵 الذهاب لصفحة إدارة الطلبات</a>
+        </div>
+
+        <div class="admin-card">
+            <h2>إحصائيات المطعم 📊</h2>
+            <div class="stats-grid">
+                <div class="stat-box" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                    <h3 style="margin-bottom: 10px;">🍔 تقارير المبيعات</h3>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">عرض قائمة بكل الأصناف المباعة وعدد مرات طلبها.</p>
+                    <button onclick="openItemsModal()" class="submit-btn" style="background: #e67e22;">عرض مبيعات الأصناف 📊</button>
+                </div>
+                
+                <div class="stat-box" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+                    <h3 style="margin-bottom: 10px;">👥 تقارير العملاء</h3>
+                    <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">عرض قائمة مفصلة بجميع العملاء، عدد طلباتهم، وإجمالي مدفوعاتهم.</p>
+                    <button onclick="openCustomersModal()" class="submit-btn" style="background: #27ae60;">عرض قائمة العملاء 📋</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 2rem;">
+            <div class="admin-card" style="flex: 1; min-width: 300px; margin-bottom: 0;">
+                <h2>إضافة فئة (Category)</h2>
+                <form id="category-form">
+                    <div class="form-group"><label>اسم الفئة</label><input type="text" id="cat-name" required></div>
+                    <button type="submit" class="submit-btn">إضافة الفئة</button>
+                </form>
+            </div>
+
+            <div class="admin-card" style="flex: 2; min-width: 300px; margin-bottom: 0;">
+                <h2>إضافة وجبة (Menu Item)</h2>
+                <form id="menu-item-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group" style="margin:0;"><label>اسم الوجبة</label><input type="text" id="item-name" required></div>
+                    <div class="form-group" style="margin:0;"><label>السعر الأساسي (ج.م)</label><input type="number" id="item-price" required></div>
+                    <div class="form-group" style="margin:0;"><label>الفئة</label><select id="item-category" required></select></div>
+                    <div class="form-group" style="margin:0;"><label>الصورة (اختياري)</label><input type="file" id="item-image" accept="image/*"></div>
+                    
+                    <div class="form-group" style="grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; background: #f1f2f6; padding: 10px; border-radius: 8px;">
+                        <input type="checkbox" id="item-has-sizes" style="width: auto; cursor: pointer; transform: scale(1.2);">
+                        <label for="item-has-sizes" style="margin: 0; cursor: pointer; font-weight: bold; color: var(--primary-color);">يوجد أحجام مختلفة لهذه الوجبة؟ (صغير، وسط، كبير)</label>
+                    </div>
+                    
+                    <div id="item-sizes-container" style="display: none; grid-column: 1 / -1; grid-template-columns: 1fr 1fr 1fr; gap: 15px; background: #fffaf0; padding: 15px; border-radius: 8px; border: 1px dashed #e67e22;">
+                        <div class="form-group" style="margin:0;"><label>سعر الصغير</label><input type="number" id="item-price-small"></div>
+                        <div class="form-group" style="margin:0;"><label>سعر الوسط</label><input type="number" id="item-price-medium"></div>
+                        <div class="form-group" style="margin:0;"><label>سعر الكبير</label><input type="number" id="item-price-large"></div>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1; margin:0;"><label>الوصف (اختياري)</label><textarea id="item-desc" rows="2"></textarea></div>
+                    <button type="submit" class="submit-btn" style="grid-column: 1 / -1;">إضافة الوجبة</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="admin-card">
+            <h2>إدارة الوجبات (المنيو) 📝</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>اسم الوجبة</th>
+                            <th>الفئة</th>
+                            <th>السعر</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="menu-items-list">
+                        <tr><td colspan="4" style="text-align: center;">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background:var(--white); margin:5vh auto; padding:2rem; width:90%; max-width:500px; border-radius:12px; box-shadow:0 15px 30px rgba(0,0,0,0.2); max-height: 85vh; overflow-y: auto;">
+            <h2 style="color: var(--secondary-color); border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; margin-bottom: 20px;">تعديل الوجبة ✏️</h2>
+            <form id="edit-item-form">
+                <input type="hidden" id="edit-item-id">
+                <div class="form-group"><label>الاسم</label><input type="text" id="edit-item-name" required></div>
+                <div class="form-group"><label>السعر الأساسي (ج.م)</label><input type="number" id="edit-item-price" required></div>
+                <div class="form-group"><label>الفئة</label><select id="edit-item-category" required></select></div>
+                
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; background: #f1f2f6; padding: 10px; border-radius: 8px;">
+                    <input type="checkbox" id="edit-item-has-sizes" style="width: auto; cursor: pointer; transform: scale(1.2);">
+                    <label for="edit-item-has-sizes" style="margin: 0; cursor: pointer; font-weight: bold; color: var(--primary-color);">تفعيل الأحجام المتعددة</label>
+                </div>
+                
+                <div id="edit-item-sizes-container" style="display: none; grid-template-columns: 1fr 1fr 1fr; gap: 10px; background: #fffaf0; padding: 10px; border-radius: 8px; border: 1px dashed #e67e22; margin-bottom: 15px;">
+                    <div class="form-group" style="margin:0;"><label>الصغير</label><input type="number" id="edit-item-price-small"></div>
+                    <div class="form-group" style="margin:0;"><label>الوسط</label><input type="number" id="edit-item-price-medium"></div>
+                    <div class="form-group" style="margin:0;"><label>الكبير</label><input type="number" id="edit-item-price-large"></div>
+                </div>
+
+                <div class="form-group"><label>الوصف</label><textarea id="edit-item-desc" rows="2"></textarea></div>
+                
+                <div class="form-group" style="text-align: center; margin-bottom: 15px;">
+                    <label>الصورة الحالية</label>
+                    <img id="edit-current-image" src="" alt="صورة الوجبة" style="max-height: 120px; border-radius: 8px; display: none; margin: 0 auto; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+
+                <div class="form-group"><label>تغيير الصورة (اختياري)</label><input type="file" id="edit-item-image" accept="image/*"></div>
+                
+                <div style="display:flex; gap:10px; margin-top: 20px;">
+                    <button type="submit" class="submit-btn" style="flex:1; background: #2ecc71;">حفظ التعديلات</button>
+                    <button type="button" class="submit-btn" style="flex:1; background:#95a5a6;" onclick="closeEditModal()">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="items-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background:var(--white); margin:5vh auto; padding:2rem; width:90%; max-width:600px; border-radius:12px; max-height: 85vh; overflow-y: auto;">
+            <h2 style="color: var(--secondary-color); border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; margin-bottom: 20px;">مبيعات جميع الأصناف 🍔</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead><tr><th>اسم الصنف</th><th>إجمالي الكمية المباعة</th></tr></thead>
+                    <tbody id="all-items-list"><tr><td colspan="2" style="text-align: center;">جاري التحميل...</td></tr></tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="submit-btn" style="background:#95a5a6; width: auto; padding: 10px 40px;" onclick="closeItemsModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customers-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background:var(--white); margin:5vh auto; padding:2rem; width:95%; max-width:850px; border-radius:12px; max-height: 85vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; border-bottom: 2px solid #f1f2f6; padding-bottom: 15px; margin-bottom: 20px;">
+                <h2 style="color: var(--secondary-color); margin: 0;">قائمة عملاء المطعم 📋</h2>
+                <div style="display: flex; align-items: center; gap: 10px; background: #f8f9fa; padding: 8px 15px; border-radius: 8px; border: 1px solid #ddd;">
+                    <label style="font-weight: bold; color: #333; margin: 0;">تجميع وعرض حسب:</label>
+                    <select id="customer-group-select" onchange="renderCustomers()" style="padding: 5px 10px; border-radius: 5px; font-family: 'Cairo', sans-serif; border: 1px solid #ccc; outline: none; cursor: pointer; font-weight: bold;">
+                        <option value="both" selected>فصل كل اسم ورقم (تفصيلي)</option>
+                        <option value="phone">رقم الهاتف (دمج الطلبات)</option>
+                        <option value="name">اسم العميل (دمج الطلبات)</option>
+                    </select>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead><tr><th>الاسم</th><th>رقم الهاتف</th><th>حالة الحساب</th><th>عدد الطلبات</th><th>إجمالي المدفوعات</th></tr></thead>
+                    <tbody id="all-customers-list"><tr><td colspan="5" style="text-align: center;">جاري التحميل...</td></tr></tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="submit-btn" style="background:#95a5a6; width: auto; padding: 10px 40px;" onclick="closeCustomersModal()">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

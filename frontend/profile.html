@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعمنا | حسابي</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ff4757">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .profile-container { max-width: 800px; margin: 3rem auto; padding: 0 20px; }
+        .profile-card { background: var(--white); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 2rem; position: relative;}
+        .user-info h2 { color: var(--secondary-color); margin-bottom: 10px; }
+        .user-info p { color: #666; font-size: 1.1rem; margin-bottom: 8px;}
+        .orders-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .orders-table th, .orders-table td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        .orders-table th { background-color: #f8f9fa; color: var(--secondary-color); }
+        .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 0.9em; font-weight: bold; color: white; }
+        .edit-btn { background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; margin-top: 15px; display: inline-block;}
+        .edit-btn:hover { background: #ee5253; }
+        .form-group { margin-bottom: 15px; text-align: right; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333;}
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-family: 'Cairo', sans-serif; }
+        .modal-content-scrollable { background: var(--white); margin: 5vh auto; padding: 2rem; width: 90%; max-width: 400px; border-radius: 15px; text-align: center; position: relative; max-height: 85vh; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">مطعمنا 🍔</div>
+        <ul class="nav-links">
+            <li><a href="/">الرئيسية (المنيو)</a></li>
+            <li><a href="javascript:void(0)" id="logout-btn" style="color: var(--primary-color);">تسجيل الخروج</a></li>
+        </ul>
+    </nav>
+
+    <div class="profile-container">
+        <div class="profile-card user-info">
+            <h2>مرحباً، <span id="user-name"></span> 👋</h2>
+            <p>رقم الهاتف: <span id="user-phone"></span></p>
+            <p>نوع الحساب: <span id="user-role" style="font-weight: bold; color: var(--primary-color);"></span></p>
+            <button class="edit-btn" onclick="openProfileModal()">تعديل البيانات ✏️</button>
+        </div>
+
+        <div id="admin-add-user-card" class="profile-card" style="display: none; border: 2px solid var(--primary-color);">
+            <h2 style="border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; margin-bottom: 20px;">إضافة حساب جديد (موظف / مدير) 👨‍💼</h2>
+            <form id="add-user-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label>الاسم بالكامل</label>
+                        <input type="text" id="new-user-name" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label>رقم الهاتف</label>
+                        <input type="text" id="new-user-phone" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="new-user-password" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label>تأكيد كلمة المرور</label>
+                        <input type="password" id="new-user-confirm-password" required>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1; margin: 0;">
+                        <label>صلاحية الحساب (Role)</label>
+                        <select id="new-user-role" required>
+                            <option value="user">مستخدم عادي / عميل</option>
+                            <option value="admin">مدير نظام (Admin)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="edit-btn" style="width: 100%; font-size: 1.1rem; padding: 12px; margin-top: 20px;">إنشاء الحساب فوراً</button>
+            </form>
+        </div>
+
+        <div class="profile-card">
+            <h2 style="border-bottom: 2px solid #f1f2f6; padding-bottom: 10px; margin-bottom: 20px;">تاريخ طلباتي 🛵</h2>
+            <div style="overflow-x: auto;">
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>التاريخ</th>
+                            <th>الإجمالي</th>
+                            <th>حالة الطلب</th>
+                        </tr>
+                    </thead>
+                    <tbody id="my-orders-list">
+                        <tr><td colspan="4" style="text-align: center;">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="modal-content-scrollable">
+            <h2 style="color: #004d40; margin-bottom: 20px; font-weight: 800;">تعديل البيانات ✏️</h2>
+            
+            <form id="profile-form" style="text-align: right;">
+                <div class="form-group">
+                    <label>الاسم:</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف:</label>
+                    <input type="text" id="edit-phone" required>
+                </div>
+
+                <hr style="border: 0; border-top: 1px dashed #ccc; margin: 25px 0;">
+
+                <button type="button" id="toggle-password-btn" onclick="togglePasswordSection()" style="width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #d4ac0d; background-color: #fef9e7; color: #004d40; font-weight: bold; cursor: pointer; margin-bottom: 20px; font-family: 'Cairo', sans-serif; font-size: 1rem; transition: 0.3s;">
+                    اضغط هنا لتغيير كلمة المرور 🔑
+                </button>
+
+                <div id="password-section" style="display: none;">
+                    <div class="form-group">
+                        <label>كلمة المرور الحالية:</label>
+                        <input type="password" id="current-password" style="background-color: #e3f2fd;">
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور الجديدة:</label>
+                        <input type="password" id="new-password" placeholder="أدخل كلمة المرور الجديدة">
+                    </div>
+                    <div class="form-group">
+                        <label>تأكيد كلمة المرور الجديدة:</label>
+                        <input type="password" id="confirm-password" placeholder="أعد كتابة كلمة المرور الجديدة">
+                    </div>
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 12px; border-radius: 8px; border: none; background-color: #145a32; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-bottom: 15px; font-family: 'Cairo', sans-serif;">
+                    حفظ التعديلات
+                </button>
+                
+                <div style="text-align: center;">
+                    <a href="javascript:void(0)" onclick="closeProfileModal()" style="color: #7f8fa6; text-decoration: underline; font-size: 0.9rem;">إلغاء</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

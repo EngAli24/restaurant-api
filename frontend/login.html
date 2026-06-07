@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مطعمنا | تسجيل الدخول</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#ff4757">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+      
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">مطعمنا 🍔</div>
+        <ul class="nav-links">
+            <li><a href="/">الرئيسية</a></li>
+        </ul>
+    </nav>
+
+    <div class="auth-container">
+        
+        <div id="login-section">
+            <h2>تسجيل الدخول</h2>
+            <form id="login-form">
+                <input type="text" id="login-phone" placeholder="رقم الهاتف (11 رقم)" required>
+                <input type="password" id="login-password" placeholder="كلمة المرور" required>
+                <button type="submit" class="auth-btn">دخول</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                ليس لديك حساب؟ <a href="#" onclick="toggleAuth('register')" style="color: var(--primary-color);">إنشاء حساب جديد</a>
+            </p>
+        </div>
+
+        <div id="register-section" class="hidden">
+            <h2>إنشاء حساب جديد</h2>
+            <form id="register-form">
+                <input type="text" id="reg-name" placeholder="الاسم بالكامل" required>
+                <input type="text" id="reg-phone" placeholder="رقم الهاتف (11 رقم)" required>
+                <input type="password" id="reg-password" placeholder="كلمة المرور" required>
+                <input type="password" id="reg-password-confirm" placeholder="تأكيد كلمة المرور" required>
+                
+                <button type="submit" class="auth-btn">إنشاء حساب</button>
+            </form>
+            <p style="margin-top: 15px; font-size: 0.9rem;">
+                لديك حساب بالفعل؟ <a href="#" onclick="toggleAuth('login')" style="color: var(--primary-color);">تسجيل الدخول</a>
+            </p>
+        </div>
+
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
