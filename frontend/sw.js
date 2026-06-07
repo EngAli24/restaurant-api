@@ -46,7 +46,6 @@ self.addEventListener('fetch', event => {
         
         return fetch(event.request).catch(err => {
             console.log('تم تجاوز خطأ في جلب ملف خارجي:', event.request.url);
-            // 💡 التعديل هنا: إرجاع استجابة وهمية فارغة عشان الـ Service Worker ميضربش إيرور
             return new Response('', { status: 404, statusText: 'Not Found' });
         });
       })
