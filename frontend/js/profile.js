@@ -84,46 +84,50 @@ function togglePasswordSection() {
     }
 }
 
-document.getElementById('profile-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+// 💡 تم إضافة الحماية هنا
+const profileForm = document.getElementById('profile-form');
+if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    const name = document.getElementById('edit-name').value;
-    const phone = document.getElementById('edit-phone').value;
-    const currentPassword = document.getElementById('current-password').value;
-    const newPassword = document.getElementById('new-password').value;
-    const confirmPassword = document.getElementById('confirm-password').value;
+        const name = document.getElementById('edit-name').value;
+        const phone = document.getElementById('edit-phone').value;
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmPassword = document.getElementById('confirm-password').value;
 
-    const updatedData = { name, phone };
-    
-    if (isPasswordChangeActive) {
-        if (newPassword !== confirmPassword) {
-            alert('كلمة المرور الجديدة وتأكيدها غير متطابقين!');
-            return;
+        const updatedData = { name, phone };
+        
+        if (isPasswordChangeActive) {
+            if (newPassword !== confirmPassword) {
+                alert('كلمة المرور الجديدة وتأكيدها غير متطابقين!');
+                return;
+            }
+            updatedData.currentPassword = currentPassword;
+            updatedData.newPassword = newPassword;
         }
-        updatedData.currentPassword = currentPassword;
-        updatedData.newPassword = newPassword;
-    }
 
-    try {
-        const response = await fetch(`${API_URL}/auth/profile`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData),
-            credentials: 'include' 
-        });
+        try {
+            const response = await fetch(`${API_URL}/auth/profile`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData),
+                credentials: 'include' 
+            });
 
-        if (response.ok) {
-            alert('✅ تم حفظ التعديلات بنجاح!');
-            closeProfileModal();
-            loadUserProfile(); 
-        } else {
-            const errorData = await response.json();
-            alert(errorData.message || 'حدث خطأ أثناء التحديث');
+            if (response.ok) {
+                alert('✅ تم حفظ التعديلات بنجاح!');
+                closeProfileModal();
+                loadUserProfile(); 
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || 'حدث خطأ أثناء التحديث');
+            }
+        } catch (error) {
+            alert('خطأ في الاتصال بالسيرفر');
         }
-    } catch (error) {
-        alert('خطأ في الاتصال بالسيرفر');
-    }
-});
+    });
+}
 
 // ==========================================
 // منطق إنشاء حساب بواسطة المدير
@@ -174,11 +178,13 @@ async function loadMyOrders() {
         const ordersList = document.getElementById('my-orders-list');
         
         if (!response.ok) {
-            ordersList.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">حدث خطأ في جلب الطلبات</td></tr>';
+            if(ordersList) ordersList.innerHTML = '<tr><td colspan="4" style="text-align: center; color: red;">حدث خطأ في جلب الطلبات</td></tr>';
             return;
         }
 
         const orders = await response.json();
+        if(!ordersList) return;
+        
         ordersList.innerHTML = '';
 
         if(orders.length === 0) {
@@ -210,12 +216,15 @@ async function loadMyOrders() {
     } catch (error) { console.error(error); }
 }
 
-document.getElementById('logout-btn').addEventListener('click', async () => {
-    try {
-        await fetch(`${API_URL}/auth/logout`, { method: 'POST' });
-        window.location.href = '/login';
-    } catch (error) { console.error(error); }
-});
+const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            await fetch(`${API_URL}/auth/logout`, { method: 'POST' });
+            window.location.href = '/login';
+        } catch (error) { console.error(error); }
+    });
+}
 
 loadUserProfile();
 loadMyOrders();
