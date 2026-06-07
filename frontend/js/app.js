@@ -11,12 +11,21 @@ async function updateNavbar() {
         if (response.ok) {
             const user = await response.json();
             const adminLink = user.role === 'admin' 
-                ? `<li><a href="/admin" style="color: var(--primary-color); font-weight: bold;">⚙️ لوحة الإدارة</a></li><li><a href="/profile">البروفايل</a></li>` 
-                : `<li><a href="/profile">البروفايل</a></li>`;
+                ? `<li><a href="/admin" style="font-size: 1.2rem;" title="لوحة الإدارة">⚙️</a></li>` 
+                : ``;
                 
-            navLinks.innerHTML = `<li><a href="/" class="active">المنيو</a></li>${adminLink}<li><a href="javascript:void(0)" id="cart-btn" onclick="toggleCart()">🛒 السلة (<span id="cart-count">0</span>)</a></li><li><a href="javascript:void(0)" onclick="logoutUser()" class="login-btn" style="background-color: #2b2d42;">تسجيل الخروج</a></li>`;
+            navLinks.innerHTML = `
+                ${adminLink}
+                <li><a href="/profile" style="font-size: 1.2rem;" title="البروفايل">👤</a></li>
+                <li><a href="javascript:void(0)" id="cart-btn" onclick="toggleCart()" style="font-size: 1.2rem;" title="السلة">🛒 (<span id="cart-count">0</span>)</a></li>
+                <li><a href="javascript:void(0)" onclick="logoutUser()" class="login-btn" style="background-color: #2b2d42;">تسجيل الخروج</a></li>
+            `;
         } else {
-            navLinks.innerHTML = `<li><a href="/" class="active">المنيو</a></li><li><a href="/login">البروفايل</a></li><li><a href="javascript:void(0)" id="cart-btn" onclick="toggleCart()">🛒 السلة (<span id="cart-count">0</span>)</a></li><li><a href="/login" class="login-btn">تسجيل الدخول</a></li>`;
+            navLinks.innerHTML = `
+                <li><a href="/login" style="font-size: 1.2rem;" title="البروفايل">👤</a></li>
+                <li><a href="javascript:void(0)" id="cart-btn" onclick="toggleCart()" style="font-size: 1.2rem;" title="السلة">🛒 (<span id="cart-count">0</span>)</a></li>
+                <li><a href="/login" class="login-btn">تسجيل الدخول</a></li>
+            `;
         }
     } catch (error) { console.error("Auth check failed:", error); }
 }
