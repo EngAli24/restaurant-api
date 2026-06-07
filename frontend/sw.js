@@ -1,4 +1,4 @@
-const CACHE_NAME = 'restaurant-cache-v3';
+const CACHE_NAME = 'restaurant-cache-v5';
 
 const urlsToCache = [
   '/',
@@ -18,14 +18,35 @@ self.addEventListener('install', event => {
   );
 });
 
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cache => {
+                    if (cache !== CACHE_NAME) {
+                        return caches.delete(cache);
+                    }
+                })
+            );
+        })
+    );
+});
+
 self.addEventListener('fetch', event => {
+  if (event.request.url.includes('/api/')) {
+      return; 
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
+        
+        return fetch(event.request).catch(err => {
+            console.log('تم تجاوز خطأ في جلب ملف خارجي:', event.request.url);
+        });
       })
   );
 });
